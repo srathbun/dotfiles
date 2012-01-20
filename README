@@ -1,0 +1,3 @@
+Dotfiles for linux systems. I'm tired of having to individually set up my boxes, so basic set up stuff will be going in here. 
+
+Currently it is just bash files. I expect to add other things in the future, though some important subgroups (i.e. vim) will have their own repository.
