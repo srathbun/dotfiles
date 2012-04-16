@@ -29,6 +29,11 @@ if [ -d "${HOME}/bin" ] ; then
   PATH=${HOME}/bin:${PATH}:.
 fi
 
+# Set PATH so it includes user's local private bin if it exists
+if [ -d "${HOME}/.local/bin" ] ; then
+  PATH=${HOME}/.local/bin:${PATH}:.
+fi
+
 # Set MANPATH so it includes users' private man if it exists
 if [ -d "${HOME}/man" ]; then
   MANPATH=${HOME}/man:${MANPATH}
@@ -39,3 +44,16 @@ if [ -d "${HOME}/info" ]; then
   INFOPATH=${HOME}/info:${INFOPATH}
 fi
 
+if [ -e /usr/share/terminfo/x/xterm-256color ]; then
+        export TERM='xterm-256color'
+else
+        export TERM='xterm-color'
+fi
+
+# Python pip options
+# Tell pip to install packages in user directory
+export PIP_INSTALL_OPTION="--user"
+# Ensure packages pip installs are on the PATH
+PATH="$HOME/.local/bin:$PATH"
+# Enable pip's download cache for speedy reinstallation
+export PIP_DOWNLOAD_CACHE="$HOME/.pip/cache"

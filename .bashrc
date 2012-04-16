@@ -62,8 +62,8 @@ NC='\e[0m'              # No Color
 # set -o ignoreeof
 
 # use vi line editing interface
-set +o vi
-set -o emacs
+set +o emacs
+set -o vi
 
 # Use case-insensitive filename globbing
 shopt -s nocaseglob
@@ -114,8 +114,8 @@ export HISTIGNORE=$'[ \t]*:&:[fb]g:exit'
 # Whenever displaying the prompt, write the previous line to disk
 # export PROMPT_COMMAND="history -a"
 
-# the bash history should save 3000 commands
-export HISTFILESIZE=3000 
+# the bash history should save 10000 commands
+export HISTFILESIZE=10000 
 
 
 # Aliases
@@ -131,6 +131,9 @@ export HISTFILESIZE=3000
 alias hist='history | grep $1' #Requires one input
 
 # ALIAS TO REMOTE SERVERS
+alias h91502='ssh 192.168.1.43'
+alias repo='ssh 192.168.20.24'
+alias lddmonline='ssh lddmonline.com'
 # alias ANYNAMEHERE='ssh YOURWEBSITE.com -l USERNAME -p PORTNUMBERHERE'
 
 # Alias's to some of my BashScripts
@@ -245,14 +248,14 @@ function include_d {
 	dir=$1
 	if [ -d $HOME/.$dir.d -a -r $HOME/.$dir.d -a -x $HOME/.$dir.d ]; then
 		for i in $HOME/.$dir.d/*.sh; do
-			 . $i
+			 source $i
 		done
 	fi
 }
 
-include_d bash_functions
-include_d bash_aliases
-include_d bash_completion
+#include_d bash_functions
+#include_d bash_aliases
+#include_d bash_completion
 
 # Prompting
 # #########
