@@ -1,0 +1,76 @@
+[user]
+        email = srathbun@riverainc.com
+        name = Spencer Rathbun
+[color]
+        ui = auto
+[color "branch"]
+        current = yellow reverse
+        local = yellow
+        remote = green
+[color "diff"]
+        meta = yellow bold
+        frag = magenta bold
+        old = red bold
+        new = green bold
+        whitespace = red reverse
+[color "status"]
+        added = yellow
+        changed = green
+        untracked = cyan
+[core]
+        whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
+        excludesfile = /Users/srathbun/.gitignore_global
+[alias]
+        lg = log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+        logdiff = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --date=relative --full-diff -p
+        undo=reset --hard
+        new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
+        whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
+        whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+        intercommit = !sh -c 'git show "$1" > .git/commit1 && git show "$2" > .git/commit2 && interdiff .git/commit[12] | less -FRS' -
+        edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
+        add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
+        graphviz = "!f() { echo 'digraph git {' ; git log --pretty='format:  %h -> { %p }' \"$@\" | sed 's/[0-9a-f][0-9a-f]*/\"&\"/g' ; echo '}'; }; f"
+
+        funcdiff = !sh -c \"git show \\\"\\$0:\\$2\\\" | sed -n \\\"/^[^ \\t].*\\$3[ \\t]*(/,/^}/p\\\" > .tmp1 && git show \\\"\\$1:\\$2\\\" | sed -n \\\"/^[^ \\t].*\\$3[ \\t]*(/,/^}/p\\\" > .tmp2 && git diff --no-index .tmp1 .tmp2\"
+
+        la = "!ini-parser.awk ~/.gitconfig '[alias]' | sed -e 's/=/^[[0;31m=^[[0m/g' | sed -e 's/#.*/^[[0;32m&^[[0m/g' | less -R"
+        # Show files ignored by git:
+        ign = ls-files -o -i --exclude-standard
+        st = status
+        br = branch
+        ci = commit
+        co = checkout
+        di = diff --ignore-space-at-eol -b -w --ignore-blank-lines --word-diff
+        dc = diff --cached
+        ds = diff --stat
+        wc = whatchanged
+        sup = svn rebase
+        h = help
+        hh = "!sh -c 'a=$(git config --get alias.$1); : ${a:=$1}; git help ${a%% *}' -"
+        get = "!unset GIT_DIR;  while ! [ -f .gitmodules ]; do cd ..; done;  echo \\\"Updating from `pwd` ...\\\";  git pull --rebase --all  &&  git submodule update --recursive --remote --init --rebase  &&  git submodule foreach \"git pull --rebase --all\""
+        change = "!sh -c 'git co $1; git submodule foreach \"git co $1\"'"
+        ckall = "!unset GIT_DIR;  B=$(shift);  while ! [ -f .gitmodules ]; do cd ..; done;  git checkout $B && git submodule foreach \"git checkout $B\""
+        pr = pull
+        pull-all = !"CURRBRANCH=$(git rev-parse --abbrev-ref HEAD); for b in $(git for-each-ref refs/heads --format='%(refname)') ; do git checkout ${b#refs/heads/} ; git pull --ff-only ; done; git checkout $CURRBRANCH"
+[difftool "sourcetree"]
+        cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+        path =
+[mergetool "sourcetree"]
+        cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+        trustExitCode = true
+[push]
+        default = upstream
+[credential]
+        helper = osxkeychain
+[http]
+        sslCAInfo = /Users/srathbun/.ssl_ca_certs.crt
+[merge]
+        tool = splice
+[mergetool "splice"]
+        # splice fails miserably to load if it does not have all four files
+        cmd = "vim -f $BASE $LOCAL $REMOTE $MERGED -c 'let g:syntastic_auto_loc_list=0'  -c 'SpliceInit'"
+        trustExitCode = true
+[merge "json"]
+        name = json merge driver
+        driver = jsondiff.js %O %A %B
